@@ -1,6 +1,7 @@
 package chatos.camp.noschatos;
 
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,10 +18,10 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import chatos.camp.noschatos.event.RetrieveChannelsEvent;
 import chatos.camp.noschatos.adapters.ItemAdapter;
 import chatos.camp.noschatos.misc.GridAutofitLayoutManager;
 import chatos.camp.noschatos.misc.LayoutManagerType;
-import chatos.camp.noschatos.model.Channel;
 import chatos.camp.noschatos.model.network.NetworkServiceManager;
 
 
@@ -30,8 +31,8 @@ public class ChannelListActivity extends EventBaseActivity {
     @Inject
     NetworkServiceManager mNetworkServiceManager;
 
-    @Inject
-    Channel mChannel;
+    //@Inject
+    //Channel mChannel;
 
     private MenuItem menuGrid;
     private MenuItem menuList;
@@ -190,5 +191,11 @@ public class ChannelListActivity extends EventBaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onEvent(RetrieveChannelsEvent event){
+        Log.i("_DEBUG", "Size: "+event.getChannels().size());
+        Log.i("_DEBUG", event.getChannels().get(1).toString());
+
     }
 }

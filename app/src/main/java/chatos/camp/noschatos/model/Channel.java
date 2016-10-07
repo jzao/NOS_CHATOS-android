@@ -9,6 +9,11 @@ public class Channel {
     private String name;
     private String channelUri;
 
+    public Channel(int _id, String _name, String _uri){
+        id = _id;
+        name = _name;
+        channelUri = _uri;
+    }
 
     public int getId() {
         return id;

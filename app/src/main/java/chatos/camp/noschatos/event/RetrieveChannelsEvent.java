@@ -1,5 +1,7 @@
 package chatos.camp.noschatos.event;
 
+import java.util.List;
+
 import chatos.camp.noschatos.model.Channel;
 
 /**
@@ -8,14 +10,14 @@ import chatos.camp.noschatos.model.Channel;
 
 public class RetrieveChannelsEvent {
 
-    private final Channel mChannel;
+    private final List<Channel> mChannels;
 
-    public RetrieveChannelsEvent(Channel pChannel) {
-        mChannel = pChannel;
+    public RetrieveChannelsEvent(List<Channel> pChannels) {
+        mChannels = pChannels;
     }
 
-    public Channel getChannel() {
-        return mChannel;
+    public List<Channel> getChannels() {
+        return mChannels;
     }
 
 }
