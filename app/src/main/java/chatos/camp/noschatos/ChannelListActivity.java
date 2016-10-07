@@ -3,7 +3,6 @@ package chatos.camp.noschatos;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,15 +14,24 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import chatos.camp.noschatos.adapters.ImageAdapter;
 import chatos.camp.noschatos.misc.GridAutofitLayoutManager;
 import chatos.camp.noschatos.misc.LayoutManagerType;
+import chatos.camp.noschatos.model.Channel;
+import chatos.camp.noschatos.model.network.NetworkServiceManager;
 
 
+public class ChannelListActivity extends EventBaseActivity {
 
-public class ChannelListActivity extends AppCompatActivity {
 
+    @Inject
+    NetworkServiceManager mNetworkServiceManager;
+
+    @Inject
+    Channel mChannel;
 
     private MenuItem menuGrid;
     private MenuItem menuList;
@@ -44,7 +52,7 @@ public class ChannelListActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Channels");
+        getSupportActionBar().setTitle("Channels");
 
         if (actionList == null) {
             actionList = Boolean.FALSE;
@@ -75,6 +83,10 @@ public class ChannelListActivity extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
 
+        Log.i("_DEBUG", "network service manager : " + mNetworkServiceManager);
+        if (mNetworkServiceManager != null) {
+            mNetworkServiceManager.getChannels();
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
