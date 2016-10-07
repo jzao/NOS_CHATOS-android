@@ -4,7 +4,7 @@ import android.util.Log;
 
 import javax.inject.Singleton;
 
-import chatos.camp.noschatos.model.ApiServiceGenerator;
+import chatos.camp.noschatos.model.network.ApiServiceGenerator;
 import chatos.camp.noschatos.model.Channel;
 import chatos.camp.noschatos.model.network.NetworkServiceManager;
 import dagger.Module;

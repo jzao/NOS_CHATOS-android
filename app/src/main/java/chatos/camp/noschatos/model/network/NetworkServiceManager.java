@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.google.gson.JsonObject;
 
-import chatos.camp.noschatos.model.ApiServiceGenerator;
 import chatos.camp.noschatos.model.Channel;
 import retrofit2.Call;
 import retrofit2.Callback;
