@@ -196,5 +196,7 @@ public class ChannelListActivity extends EventBaseActivity {
 
     public void onEvent(RetrieveChannelsEvent event){
         Log.i("_DEBUG", "Size: "+event.getChannels().size());
+        Log.i("_DEBUG", event.getChannels().get(1).toString());
+
     }
 }

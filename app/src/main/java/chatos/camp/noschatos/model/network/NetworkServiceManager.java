@@ -33,24 +33,27 @@ public class NetworkServiceManager {
         getChannels.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                Log.i("_DEBUG", ""+response.body());
-                Log.i("_DEBUG", "is successful ? : "+response.isSuccessful());
 
-                List<Channel> channelsList = new ArrayList<Channel>();
+                if(response.isSuccessful()) {
+                    List<Channel> channelsList = new ArrayList<Channel>();
 
-                JsonArray channelsArray = response.body().getAsJsonArray("value");
+                    JsonArray channelsArray = response.body().getAsJsonArray("value");
 
-                for(int i = 0 ; i < channelsArray.size() ; i++){
-                    JsonObject jsonChannel = channelsArray.get(i).getAsJsonObject();
+                    for (int i = 0; i < channelsArray.size(); i++) {
+                        JsonObject jsonChannel = channelsArray.get(i).getAsJsonObject();
 
-                    int id = Integer.parseInt(jsonChannel.get("ChannelId").getAsString());
-                    String name = jsonChannel.get("Name").getAsString();
-                    String iconUri = jsonChannel.get("IconUri").getAsString();
+                        int id = Integer.parseInt(jsonChannel.get("ChannelId").getAsString());
+                        String name = jsonChannel.get("Name").getAsString();
+                        String iconUri = jsonChannel.get("IconUri").getAsString();
 
-                    channelsList.add(new Channel(id, name, iconUri));
+                        channelsList.add(new Channel(id, name, iconUri));
+                    }
+
+                    EventBus.getDefault().post(new RetrieveChannelsEvent(channelsList));
+
+                } else {
+                    //TODO - a NOS fodeu
                 }
-
-                EventBus.getDefault().post(new RetrieveChannelsEvent(channelsList));
             }
 
             @Override
