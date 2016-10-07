@@ -29,17 +29,16 @@ public class InjectorModule {
 
 
     @Provides
-    public NetworkServiceManager provideChannelServiceManager(ApiServiceGenerator pApiServiceGenerator,
-                                                                   Channel pModelChannel) {
+    public NetworkServiceManager provideChannelServiceManager(ApiServiceGenerator pApiServiceGenerator) {
         Log.i("_DEBUG", "vai criar o network service 1");
-        return new NetworkServiceManager(pApiServiceGenerator, pModelChannel);
+        return new NetworkServiceManager(pApiServiceGenerator);
     }
 
-    @Provides
+  /*  @Provides
     @Singleton
     public Channel provideChannelManager() {
         return new Channel();
     }
-
+*/
 }
 
