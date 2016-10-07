@@ -17,7 +17,7 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import chatos.camp.noschatos.adapters.ImageAdapter;
+import chatos.camp.noschatos.adapters.ItemAdapter;
 import chatos.camp.noschatos.misc.GridAutofitLayoutManager;
 import chatos.camp.noschatos.misc.LayoutManagerType;
 import chatos.camp.noschatos.model.Channel;
@@ -36,7 +36,7 @@ public class ChannelListActivity extends EventBaseActivity {
     private MenuItem menuGrid;
     private MenuItem menuList;
     private RecyclerView mRecyclerView;
-    private ImageAdapter itemAdapter;
+    private ItemAdapter itemAdapter;
     private Boolean actionList = null;
     private Boolean actionGrid = null;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -60,7 +60,7 @@ public class ChannelListActivity extends EventBaseActivity {
         if (actionGrid == null) {
             actionGrid = Boolean.TRUE;
         }
-        itemAdapter = new ImageAdapter(this);
+        itemAdapter = new ItemAdapter(this);
 
         progressBar = ButterKnife.findById(this, R.id.progress_bar);
         mRecyclerView = ButterKnife.findById(this, R.id.recycler_list);
@@ -99,7 +99,7 @@ public class ChannelListActivity extends EventBaseActivity {
 
     }
 
-    public void handleClickAtRecyclerItem(ImageAdapter.ViewHolder pViewHolder) {
+    public void handleClickAtRecyclerItem(ItemAdapter.ViewHolder pViewHolder) {
         Toast.makeText(this, "start the room chat for this channel", Toast.LENGTH_SHORT).show();
     }
 
