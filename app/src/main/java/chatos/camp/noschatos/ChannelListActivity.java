@@ -1,39 +1,41 @@
 package chatos.camp.noschatos;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import butterknife.ButterKnife;
+import chatos.camp.noschatos.adapters.ImageAdapter;
+import chatos.camp.noschatos.misc.GridAutofitLayoutManager;
+import chatos.camp.noschatos.misc.LayoutManagerType;
 
 
-import chatos.camp.noschatos.dummy.DummyContent;
 
-import java.util.List;
-
-/**
- * An activity representing a list of Channels. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ChannelDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
- */
 public class ChannelListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    private boolean mTwoPane;
+
+    private MenuItem menuGrid;
+    private MenuItem menuList;
+    private RecyclerView mRecyclerView;
+    private ImageAdapter itemAdapter;
+    private Boolean actionList = null;
+    private Boolean actionGrid = null;
+    private RecyclerView.LayoutManager mLayoutManager;
+    protected LayoutManagerType mCurrentLayoutManagerType;
+    private ProgressBar progressBar;
+
+    private static final String KEY_LAYOUT_MANAGER = "layoutManager";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,37 @@ public class ChannelListActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
+        toolbar.setTitle("Channels");
+
+        if (actionList == null) {
+            actionList = Boolean.FALSE;
+        }
+        if (actionGrid == null) {
+            actionGrid = Boolean.TRUE;
+        }
+        itemAdapter = new ImageAdapter(this);
+
+        progressBar = ButterKnife.findById(this, R.id.progress_bar);
+        mRecyclerView = ButterKnife.findById(this, R.id.recycler_list);
+        mRecyclerView.setHasFixedSize(true);
+
+
+        mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+
+        if (savedInstanceState != null) {
+            // Restore saved layout manager type.
+            mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
+                    .getSerializable(KEY_LAYOUT_MANAGER);
+        }
+
+        mRecyclerView.setAdapter(itemAdapter);
+
+
+        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+        progressBar.setVisibility(View.VISIBLE);
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -53,89 +85,98 @@ public class ChannelListActivity extends AppCompatActivity {
             }
         });
 
-        View recyclerView = findViewById(R.id.channel_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
-
-        if (findViewById(R.id.channel_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+    public void handleClickAtRecyclerItem(ImageAdapter.ViewHolder pViewHolder) {
+        Toast.makeText(this, "start the room chat for this channel", Toast.LENGTH_SHORT).show();
     }
 
-    public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+    /**
+     * Set RecyclerView's LayoutManager to the one given.
+     *
+     * @param layoutManagerType Type of layout manager to switch to.
+     */
+    public void setRecyclerViewLayoutManager(LayoutManagerType layoutManagerType) {
+        int scrollPosition = 0;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
-            mValues = items;
+        // If a layout manager has already been set, get current scroll position.
+        if (mRecyclerView != null) {
+            if (mRecyclerView.getLayoutManager() != null) {
+                scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                        .findFirstCompletelyVisibleItemPosition();
+            }
         }
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.channel_list_content, parent, false);
-            return new ViewHolder(view);
-        }
+        if (itemAdapter == null) Log.e("_DEBUG_", "adapter a null");
 
-        @Override
-        public void onBindViewHolder(final ViewHolder holder, int position) {
-            holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
-
-            holder.mView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(ChannelDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        ChannelDetailFragment fragment = new ChannelDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.channel_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ChannelDetailActivity.class);
-                        intent.putExtra(ChannelDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-
-                        context.startActivity(intent);
-                    }
+        switch (layoutManagerType) {
+            case GRID_LAYOUT_MANAGER:
+                mLayoutManager = new GridAutofitLayoutManager(this, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 114,
+                        getResources().getDisplayMetrics()));
+                mCurrentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER;
+                if (itemAdapter != null) {
+                    itemAdapter.setIsGrid(true);
                 }
-            });
+                break;
+            case LINEAR_LAYOUT_MANAGER:
+                mLayoutManager = new LinearLayoutManager(this);
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                if (itemAdapter != null) {
+                    itemAdapter.setIsGrid(false);
+                }
+                break;
+            default:
+                mLayoutManager = new LinearLayoutManager(this);
+                mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+                if (itemAdapter != null) {
+                    itemAdapter.setIsGrid(false);
+                }
         }
 
-        @Override
-        public int getItemCount() {
-            return mValues.size();
+        if (mRecyclerView != null) {
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mRecyclerView.scrollToPosition(scrollPosition);
         }
+    }
 
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_channel, menu);
+        return true;
+    }
 
-            public ViewHolder(View view) {
-                super(view);
-                mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
-            }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menuGrid = menu.findItem(R.id.action_grid).setVisible(actionGrid);
+        menuList = menu.findItem(R.id.action_list).setVisible(actionList);
 
-            @Override
-            public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
-            }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_grid:
+                setRecyclerViewLayoutManager(LayoutManagerType.GRID_LAYOUT_MANAGER);
+                item.setVisible(false);
+                actionList = true;
+                actionGrid = false;
+
+                menuGrid.setVisible(actionGrid);
+                menuList.setVisible(actionList);
+                break;
+            case R.id.action_list:
+                setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER);
+                item.setVisible(false);
+                actionList = false;
+                actionGrid = true;
+
+                menuGrid.setVisible(actionGrid);
+                menuList.setVisible(actionList);
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
 }
