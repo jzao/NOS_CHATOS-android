@@ -103,7 +103,9 @@ public class ChannelListActivity extends EventBaseActivity {
 
     public void handleClickAtRecyclerItem(ItemAdapter.ViewHolder pViewHolder) {
         Toast.makeText(this, "start the room chat for this channel", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, ChatMessagingActivity.class));
+        Intent intent = new Intent(this, ChatMessagingActivity.class);
+        intent.putExtra("roomID", pViewHolder.getChannel().getId());
+        startActivity(intent);
     }
 
 

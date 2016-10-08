@@ -3,6 +3,8 @@ package chatos.camp.noschatos;
 import android.app.Application;
 import android.content.Context;
 
+import java.net.Socket;
+
 import dagger.ObjectGraph;
 
 /**
@@ -16,6 +18,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mObjectGraph = ObjectGraph.create(new InjectorModule(this));
+        SocketManager.getInstance(this).Connect();
     }
 
     public static MyApplication get(Context context) {

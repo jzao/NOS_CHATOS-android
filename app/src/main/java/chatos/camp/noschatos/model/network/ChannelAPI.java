@@ -11,6 +11,6 @@ import retrofit2.http.GET;
 
 public interface ChannelAPI {
 
-    @GET("Channel?$format=json")
+    @GET("Channel?$format=json&$orderby=Name asc")
     Call<JsonObject> getChannels();
 }

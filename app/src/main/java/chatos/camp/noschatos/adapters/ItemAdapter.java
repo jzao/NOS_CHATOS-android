@@ -124,6 +124,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ViewHolder> {
             return mView;
         }
 
+        public Channel getChannel() {return mItem;}
+
         @Override
         public String toString() {
             return "ViewHolder{" +
