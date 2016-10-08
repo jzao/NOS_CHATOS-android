@@ -33,7 +33,7 @@ public class SocketManager {
 
     private static final String DOMAIN = "http://192.168.1.80:3000";
 
-    public static final String USERNAME = "Celso";
+    public static final String USERNAME = "Binglas";
     private int currentRoom;
 
     private static SocketManager mSocketInstance;
