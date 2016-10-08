@@ -1,7 +1,7 @@
 package chatos.camp.noschatos;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,10 +18,11 @@ import android.widget.Toast;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import chatos.camp.noschatos.event.RetrieveChannelsEvent;
 import chatos.camp.noschatos.adapters.ItemAdapter;
+import chatos.camp.noschatos.event.RetrieveChannelsEvent;
 import chatos.camp.noschatos.misc.GridAutofitLayoutManager;
 import chatos.camp.noschatos.misc.LayoutManagerType;
+import chatos.camp.noschatos.model.Channel;
 import chatos.camp.noschatos.model.network.NetworkServiceManager;
 
 
@@ -102,6 +103,7 @@ public class ChannelListActivity extends EventBaseActivity {
 
     public void handleClickAtRecyclerItem(ItemAdapter.ViewHolder pViewHolder) {
         Toast.makeText(this, "start the room chat for this channel", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, ChatMessagingActivity.class));
     }
 
 
@@ -193,9 +195,19 @@ public class ChannelListActivity extends EventBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onEvent(RetrieveChannelsEvent event){
+    public void onEvent(final RetrieveChannelsEvent event){
         Log.i("_DEBUG", "Size: "+event.getChannels().size());
         Log.i("_DEBUG", event.getChannels().get(1).toString());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Channel channel : event.getChannels()) {
+                    itemAdapter.addItemAtTail(channel);
+                }
+            }
+        }).start();
+        progressBar.setVisibility(View.GONE);
+
 
     }
 }

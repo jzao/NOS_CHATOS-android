@@ -17,4 +17,7 @@
     </string>
     <string name="menu_grid">gridView</string>
     <string name="menu_list">listView</string>
+
+    <string name="action_send">Send</string>
+    <string name="prompt_message">Message</string>
 </resources>
