@@ -33,7 +33,7 @@
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:text="001_bulbasaur.png"/>
+            android:text="YOOOOOO channel"/>
 
     </RelativeLayout>
 
